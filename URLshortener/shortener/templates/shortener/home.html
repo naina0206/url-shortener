@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - Make Your Links Shorter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f5e6d3 50%, #ffe0e6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #f8a5c2 0%, #d4a574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="url"]:focus {
+            border-color: #f8a5c2;
+            box-shadow: 0 0 0 3px rgba(248, 165, 194, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #f8a5c2 0%, #e8a5a5 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(248, 165, 194, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(248, 165, 194, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff5f8 0%, #f5e6d3 100%);
+            border-radius: 15px;
+            animation: fadeIn 0.5s ease-out;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .result-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .short-url-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .short-url {
+            flex: 1 1 85%;
+            min-width: 0;
+            max-width: none;
+            padding: 18px 20px;
+            background: white;
+            border: 3px solid #f8a5c2;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            overflow-wrap: break-word;
+        }
+
+        .copy-btn {
+            padding: 18px 20px;
+            background: #f8a5c2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            flex-grow: 0;
+            flex-basis: auto;
+        }
+
+        .copy-btn:hover {
+            background: #e895b2;
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+
+        .stats-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: white;
+            color: #d4a574;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #d4a574;
+        }
+
+        .stats-link:hover {
+            background: #d4a574;
+            color: white;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 2px solid #f0e0e0;
+        }
+
+        .divider span {
+            padding: 0 20px;
+            color: #999;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-lookup {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff5f8 0%, #f5e6d3 100%);
+            border-radius: 15px;
+        }
+
+        .stats-lookup-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .stats-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #d4a574;
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
+        }
+
+        .stats-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #d4a574 0%, #c49564 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+        }
+
+        .stats-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 165, 116, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 URL Shortener</h1>
+        <p class="subtitle">Transform long URLs into short, shareable links</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="url" name="url" placeholder="https://example.com/very/long/url/here" required>
+            </div>
+            <button type="submit">
+                <span class="icon">✂️</span> Shorten URL
+            </button>
+        </form>
+
+        {% if short_url %}
+        <div class="result-box">
+            <div class="result-label">Your Shortened URL</div>
+            <div class="short-url-container">
+                <div class="short-url" id="shortUrl">{{ short_url }}</div>
+                <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+            </div>
+            <a href="{{ stats_url }}" class="stats-link">
+                <span class="icon">📊</span> View Statistics
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="stats-lookup">
+            <div class="stats-lookup-title">
+                <span class="icon">📊</span> View Statistics by Short Code
+            </div>
+            <div class="stats-input-group">
+                <input type="text" id="statsCode" placeholder="Enter short code (e.g., abc123)" maxlength="10">
+                <button class="stats-btn" onclick="viewStats()">View Stats</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const urlText = document.getElementById('shortUrl').textContent;
+            navigator.clipboard.writeText(urlText).then(function() {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function viewStats() {
+            const code = document.getElementById('statsCode').value.trim();
+            if (code) {
+                window.location.href = '/stats/' + code + '/';
+            } else {
+                alert('Please enter a short code');
+            }
+        }
+
+        // Allow Enter key to submit stats lookup
+        document.getElementById('statsCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                viewStats();
+            }
+        });
+    </script>
+</body>
+</html>

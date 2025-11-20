@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - {{ url.short_code }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f5e6d3 50%, #ffe0e6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: #d4a574;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link:hover {
+            background: #d4a574;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin-bottom: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #f8a5c2 0%, #d4a574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .url-info {
+            background: linear-gradient(135deg, #fff5f8 0%, #f5e6d3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .url-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .url-value {
+            font-size: 16px;
+            color: #333;
+            word-break: break-all;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #f8a5c2 0%, #e8a5a5 50%, #d4a574 100%);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .no-clicks {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-clicks-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .short-url-display {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .short-url-box {
+            flex: 1;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #f8a5c2;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            padding: 12px 25px;
+            background: #f8a5c2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #e895b2;
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">← Back to Home</a>
+            <h1>📊 URL Statistics</h1>
+        </div>
+
+        <div class="stats-card">
+            <div class="url-info">
+                <div class="url-label">Original URL</div>
+                <div class="url-value">{{ url.original_url }}</div>
+                <div class="url-label" style="margin-top: 15px;">Shortened URL</div>
+                <div class="short-url-display">
+                    <div class="short-url-box" id="shortUrl">{{ short_url }}</div>
+                    <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+                </div>
+            </div>
+
+            {% if has_clicks %}
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">👆</div>
+                    <div class="stat-value">{{ url.clicks }}</div>
+                    <div class="stat-label">Total Clicks</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value">{{ days_old }}</div>
+                    <div class="stat-label">Days Active</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">{{ avg_clicks_per_day }}</div>
+                    <div class="stat-label">Avg. Clicks/Day</div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-item">
+                    <span class="info-label">Created On</span>
+                    <span class="info-value">{{ url.created_at|date:"F d, Y g:i A" }}</span>
+                </div>
+                {% if url.last_clicked %}
+                <div class="info-item">
+                    <span class="info-label">Last Clicked</span>
+                    <span class="info-value">{{ url.last_clicked|date:"F d, Y g:i A" }}</span>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <span class="info-label">Short Code</span>
+                    <span class="info-value"><strong>{{ url.short_code }}</strong></span>
+                </div>
+            </div>
+            {% else %}
+            <div class="no-clicks">
+                <div class="no-clicks-icon">🔗</div>
+                <h2>No clicks yet!</h2>
+                <p style="margin-top: 10px;">Share your shortened URL to start tracking clicks.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const urlText = document.getElementById('shortUrl').textContent;
+            navigator.clipboard.writeText(urlText).then(function() {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
+
